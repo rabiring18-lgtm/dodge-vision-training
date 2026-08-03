@@ -1,6 +1,6 @@
 const TOTAL=20,MAX_LEVEL=20,KEY='dodge-read-decision-v1';
 const actions=['catch','dodgeLeft','dodgeRight','stay'];
-const labels={catch:'捕る',dodgeLeft:'左へ避ける',dodgeRight:'右へ避ける',stay:'動かない'};
+const labels={catch:'捕る',dodgeLeft:'左へ避ける',dodgeRight:'右へ避ける',stay:'見送る'};
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const screens={home:$('#home'),game:$('#game'),result:$('#result')},canvas=$('#canvas'),ctx=canvas.getContext('2d');
 let session=null,state=null,raf=0,w=0,h=0,portraitDismissed=false,answerTimer=0;
