@@ -1,5 +1,5 @@
-/* Protocol 06 mobile landscape optimization.
-   Desktop layout is intentionally unchanged. */
+/* Protocol 06 adaptive touch layout.
+   Phones are portrait-first. Tablets remain landscape-first. */
 @media (orientation:landscape) and (pointer:coarse) and (max-height:700px){
   body{overscroll-behavior:none}
   .header{
@@ -80,8 +80,7 @@
   }
 }
 
-/* Guaranteed in-app fullscreen fallback for touch devices.
-   This is activated by JavaScript only while the possession game is running. */
+/* In-app fullscreen fallback, used while a phone or landscape tablet is playing. */
 html.possession-mobile-playing,
 body.possession-mobile-playing{
   position:fixed;
@@ -193,4 +192,55 @@ body.possession-mobile-playing .version{
   right:max(5px,env(safe-area-inset-right));
   bottom:max(3px,env(safe-area-inset-bottom));
   font-size:8px;
+}
+
+/* Phone portrait: use the long vertical field and keep all controls compact. */
+@media (orientation:portrait) and (max-width:700px){
+  body.possession-phone-playing #game .icon{
+    top:max(7px,env(safe-area-inset-top));
+    left:max(7px,env(safe-area-inset-left));
+    width:40px;
+    height:40px;
+    font-size:25px;
+  }
+
+  body.possession-phone-playing #game .possession-hud{
+    top:max(8px,env(safe-area-inset-top));
+    left:max(54px,calc(env(safe-area-inset-left) + 54px));
+    right:max(7px,env(safe-area-inset-right));
+  }
+
+  body.possession-phone-playing #game .possession-hud span{
+    padding:5px 7px;
+    font-size:9px;
+  }
+
+  body.possession-phone-playing #game .timer{
+    top:max(43px,calc(env(safe-area-inset-top) + 43px));
+    width:min(260px,56vw);
+  }
+
+  body.possession-phone-playing #game .feedback{
+    top:11%;
+    max-width:76%;
+    font-size:clamp(25px,7vw,36px);
+  }
+
+  body.possession-phone-playing #game .instruction{
+    bottom:max(9px,env(safe-area-inset-bottom));
+    max-width:74vw;
+    padding:7px 13px;
+    text-align:center;
+    font-size:12px;
+    line-height:1.35;
+  }
+}
+
+/* Orientation guidance overlay for phones and tablets. */
+#portrait{
+  z-index:120;
+}
+
+#portrait>div{
+  max-width:430px;
 }
