@@ -129,6 +129,23 @@
     };
   }
 
+  // Phone play includes finger travel and a smaller visual field.
+  // Preserve the desktop/tablet balance while slowing only phone defenders.
+  if(gameId==='rondo'&&typeof difficulty==='function'){
+    const baseRondoDifficulty=difficulty;
+    difficulty=function(level){
+      const settings=baseRondoDifficulty(level);
+      if(isPhone()){
+        return{
+          ...settings,
+          defenderSpeed:settings.defenderSpeed*.70,
+          passReactionBoost:1+(settings.passReactionBoost-1)*.72
+        };
+      }
+      return settings;
+    };
+  }
+
   // Enlarge moving-target selection only where canvas tapping is required.
   if(gameId==='tracking'&&typeof tap==='function'&&typeof canvas!=='undefined'){
     const baseTrackingTap=tap;
