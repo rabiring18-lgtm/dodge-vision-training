@@ -1,6 +1,5 @@
-// Protocol 06 mobile controls.
-// Try the browser Fullscreen API, then always use an in-app fullscreen layout
-// on touch devices so the court remains large even when browser UI cannot hide.
+// Protocol 06 adaptive touch layout.
+// Phones use portrait-first play. Tablets keep the landscape-first layout.
 
 function possessionTouchDevice(){
   return navigator.maxTouchPoints>0||
@@ -9,10 +8,31 @@ function possessionTouchDevice(){
     'ontouchstart' in window;
 }
 
+function possessionDeviceShortSide(){
+  const screenShort=Math.min(screen.width||innerWidth,screen.height||innerHeight);
+  const viewportShort=Math.min(innerWidth,innerHeight);
+  return Math.min(screenShort,viewportShort);
+}
+
+function possessionPhoneDevice(){
+  return possessionTouchDevice()&&possessionDeviceShortSide()<=700;
+}
+
+function possessionTabletDevice(){
+  return possessionTouchDevice()&&!possessionPhoneDevice();
+}
+
+function possessionPhoneLandscape(){
+  return possessionPhoneDevice()&&innerWidth>innerHeight;
+}
+
+function possessionTabletPortrait(){
+  return possessionTabletDevice()&&innerHeight>innerWidth;
+}
+
 function possessionMobilePlayMode(){
-  const landscape=innerWidth>innerHeight;
-  const shortSide=Math.min(innerWidth,innerHeight);
-  return possessionTouchDevice()&&landscape&&shortSide<=900;
+  if(possessionPhoneDevice())return true;
+  return possessionTabletDevice()&&innerWidth>innerHeight&&possessionDeviceShortSide()<=1100;
 }
 
 function possessionFullscreenElement(){
@@ -25,7 +45,6 @@ async function requestPossessionFullscreen(){
   if(!request||possessionFullscreenElement())return false;
 
   try{
-    // Invoke directly from the start-button gesture for maximum compatibility.
     await request.call(target);
     return Boolean(possessionFullscreenElement());
   }catch{
@@ -37,6 +56,11 @@ function enterPossessionMobileLayout(){
   if(!possessionMobilePlayMode())return;
   document.body.classList.add('possession-mobile-playing');
   document.documentElement.classList.add('possession-mobile-playing');
+  document.body.classList.toggle('possession-phone-playing',possessionPhoneDevice());
+  document.body.classList.toggle('possession-tablet-playing',possessionTabletDevice());
+  document.body.classList.toggle('possession-portrait-playing',innerHeight>innerWidth);
+  document.body.classList.toggle('possession-landscape-playing',innerWidth>innerHeight);
+
   setTimeout(()=>{
     window.scrollTo(0,1);
     refreshPortrait();
@@ -45,9 +69,43 @@ function enterPossessionMobileLayout(){
 }
 
 function leavePossessionMobileLayout(){
-  document.body.classList.remove('possession-mobile-playing');
+  document.body.classList.remove(
+    'possession-mobile-playing',
+    'possession-phone-playing',
+    'possession-tablet-playing',
+    'possession-portrait-playing',
+    'possession-landscape-playing'
+  );
   document.documentElement.classList.remove('possession-mobile-playing');
 }
+
+// Replace the old phone-landscape-only warning with device-specific guidance.
+refreshPortrait=function(){
+  const overlay=$('#portrait');
+  if(!overlay)return;
+
+  const gameActive=$('#game').classList.contains('active');
+  const recommendPortrait=gameActive&&!portraitDismissed&&possessionPhoneLandscape();
+  const recommendLandscape=gameActive&&!portraitDismissed&&possessionTabletPortrait();
+  const showOverlay=recommendPortrait||recommendLandscape;
+
+  if(showOverlay){
+    const title=overlay.querySelector('strong');
+    const text=overlay.querySelector('p');
+    const button=overlay.querySelector('button');
+
+    if(recommendPortrait){
+      title.textContent='スマホは縦向き推奨';
+      text.textContent='上下の間隔を広く使えるため、ポゼッションは縦向きのほうが選手を見分けやすく、タップもしやすくなります。';
+    }else{
+      title.textContent='タブレットは横向き推奨';
+      text.textContent='iPadやタブレットでは、横向きにするとコート全体を広く見渡せます。';
+    }
+    button.textContent='この向きで続ける';
+  }
+
+  overlay.style.display=showOverlay?'flex':'none';
+};
 
 const originalPossessionTapForMobile=tap;
 canvas.removeEventListener('pointerdown',originalPossessionTapForMobile);
@@ -73,9 +131,11 @@ tap=function(event){
   });
 
   const size=Math.min(w,h);
-  const hitRadius=possessionMobilePlayMode()
-    ?Math.max(56,size*.14)
-    :Math.max(38,size*.085);
+  const hitRadius=possessionPhoneDevice()
+    ?Math.max(58,size*.15)
+    :possessionTabletDevice()
+      ?Math.max(52,size*.12)
+      :Math.max(38,size*.085);
 
   if(chosen<0||best>hitRadius)return;
 
@@ -101,22 +161,22 @@ canvas.addEventListener('pointerdown',tap,{passive:false});
 
 const originalPossessionStartForMobile=start;
 start=async function(){
-  const mobileMode=possessionMobilePlayMode();
+  const adaptiveMode=possessionMobilePlayMode();
 
-  if(mobileMode){
-    // Apply the fallback immediately. Browser fullscreen is an enhancement.
+  if(adaptiveMode){
     enterPossessionMobileLayout();
-    const fullscreenPromise=requestPossessionFullscreen();
-    await fullscreenPromise;
+    await requestPossessionFullscreen();
 
-    if(possessionFullscreenElement()){
+    // Do not lock a phone to landscape. Only tablets keep landscape lock.
+    if(possessionFullscreenElement()&&possessionTabletDevice()&&innerWidth>innerHeight){
       try{await screen.orientation?.lock?.('landscape')}catch{}
     }
   }
 
   const result=await originalPossessionStartForMobile();
-  if(mobileMode){
+  if(adaptiveMode){
     setTimeout(()=>{
+      enterPossessionMobileLayout();
       window.scrollTo(0,1);
       resize();
     },100);
@@ -129,8 +189,7 @@ home=function(){
   originalPossessionHomeForMobile();
   leavePossessionMobileLayout();
 
-  const fullscreen=possessionFullscreenElement();
-  if(fullscreen){
+  if(possessionFullscreenElement()){
     const exit=document.exitFullscreen||document.webkitExitFullscreen;
     try{
       const result=exit?.call(document);
@@ -145,17 +204,26 @@ $('#homeBtn').onclick=home;
 $('#quit').onclick=()=>{
   if(confirm('トレーニングを終了しますか？'))home();
 };
+$('#continue').onclick=()=>{
+  portraitDismissed=true;
+  refreshPortrait();
+};
 
-function refreshPossessionMobileViewport(){
+function refreshPossessionAdaptiveViewport(){
   setTimeout(()=>{
-    if(possessionMobilePlayMode()&&$('#game').classList.contains('active')){
-      enterPossessionMobileLayout();
+    if($('#game').classList.contains('active')){
+      if(possessionMobilePlayMode())enterPossessionMobileLayout();
+      else leavePossessionMobileLayout();
     }
     refreshPortrait();
     if($('#game').classList.contains('active'))resize();
   },100);
 }
 
-addEventListener('fullscreenchange',refreshPossessionMobileViewport);
-addEventListener('webkitfullscreenchange',refreshPossessionMobileViewport);
-visualViewport?.addEventListener('resize',refreshPossessionMobileViewport);
+addEventListener('fullscreenchange',refreshPossessionAdaptiveViewport);
+addEventListener('webkitfullscreenchange',refreshPossessionAdaptiveViewport);
+visualViewport?.addEventListener('resize',refreshPossessionAdaptiveViewport);
+addEventListener('orientationchange',()=>{
+  portraitDismissed=false;
+  refreshPossessionAdaptiveViewport();
+});
