@@ -79,3 +79,118 @@
     font-size:clamp(22px,6vh,30px);
   }
 }
+
+/* Guaranteed in-app fullscreen fallback for touch devices.
+   This is activated by JavaScript only while the possession game is running. */
+html.possession-mobile-playing,
+body.possession-mobile-playing{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100dvh;
+  min-height:100dvh;
+  overflow:hidden;
+  overscroll-behavior:none;
+  background:#040b14;
+}
+
+body.possession-mobile-playing #game.active{
+  position:fixed;
+  inset:0;
+  z-index:40;
+  display:block;
+  width:100vw;
+  height:100dvh;
+  min-height:0;
+  background:#040b14;
+}
+
+body.possession-mobile-playing #game .header{
+  position:absolute;
+  inset:0 0 auto 0;
+  z-index:70;
+  display:block;
+  width:100%;
+  height:0;
+  padding:0;
+  border:0;
+  background:transparent;
+  pointer-events:none;
+}
+
+body.possession-mobile-playing #game .header>div{
+  display:none;
+}
+
+body.possession-mobile-playing #game .icon{
+  position:absolute;
+  top:max(6px,env(safe-area-inset-top));
+  left:max(6px,env(safe-area-inset-left));
+  width:36px;
+  height:36px;
+  padding:0;
+  border-radius:10px;
+  border:1px solid #ffffff22;
+  background:#06111edb;
+  box-shadow:0 3px 12px #0008;
+  pointer-events:auto;
+}
+
+body.possession-mobile-playing #game .possession-stage{
+  position:absolute;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100%;
+  padding:0;
+  background:#040b14;
+}
+
+body.possession-mobile-playing #game .possession-court{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  max-width:none;
+  max-height:none;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+}
+
+body.possession-mobile-playing #game .possession-hud{
+  top:max(7px,env(safe-area-inset-top));
+  left:max(50px,calc(env(safe-area-inset-left) + 50px));
+  right:max(7px,env(safe-area-inset-right));
+  gap:5px;
+}
+
+body.possession-mobile-playing #game .possession-hud span{
+  padding:5px 8px;
+  font-size:9px;
+  letter-spacing:.04em;
+}
+
+body.possession-mobile-playing #game .feedback{
+  top:15%;
+  max-width:68%;
+  font-size:clamp(22px,6vh,34px);
+  line-height:1.02;
+}
+
+body.possession-mobile-playing #game .instruction{
+  bottom:max(6px,env(safe-area-inset-bottom));
+  padding:5px 11px;
+  font-size:11px;
+}
+
+body.possession-mobile-playing #game .timer{
+  top:max(5px,env(safe-area-inset-top));
+  width:min(245px,40vw);
+}
+
+body.possession-mobile-playing .version{
+  right:max(5px,env(safe-area-inset-right));
+  bottom:max(3px,env(safe-area-inset-bottom));
+  font-size:8px;
+}
