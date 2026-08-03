@@ -212,17 +212,18 @@
     refreshPortrait();
   };
 
+  let viewportTimer=0;
   function refreshAdaptiveViewport(){
-    setTimeout(() => {
+    clearTimeout(viewportTimer);
+    viewportTimer=setTimeout(() => {
       if(document.querySelector('#game.active')&&isPhone())enterPhoneLayout();
       refreshPortrait();
       if(document.querySelector('#game.active')&&typeof resize==='function')resize();
-    },120);
+    },140);
   }
 
   addEventListener('fullscreenchange',refreshAdaptiveViewport);
   addEventListener('webkitfullscreenchange',refreshAdaptiveViewport);
-  visualViewport?.addEventListener('resize',refreshAdaptiveViewport);
   addEventListener('orientationchange',()=>{
     portraitDismissed=false;
     refreshAdaptiveViewport();
