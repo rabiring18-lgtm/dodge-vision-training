@@ -7,6 +7,7 @@
 <title>DODGE READ PRO｜鳥かご</title>
 <link rel="stylesheet" href="./pro.css?v=2">
 <link rel="stylesheet" href="./rondo.css?v=2">
+<link rel="stylesheet" href="./phone-portrait.css?v=1">
 </head>
 <body>
 <section id="home" class="screen home active">
@@ -14,7 +15,7 @@
   <h1>鳥かご<span class="pro">PRO</span></h1>
   <p class="lead">広がった高速守備を見分け、対角線も使って空いたコースへ5本つなげ。</p>
   <div class="rondo-logo"><i class="mate m1"></i><i class="mate m2"></i><i class="mate m3"></i><i class="mate m4"></i><b></b><span></span></div>
-  <div class="specs"><span>4 vs 2</span><span>20 SETS</span><span>5 PASS CHAIN</span><span>DIAGONAL 2× PASS</span><span>WIDE DEFENSE GAP</span><span>6 DEFENSE PLANS</span><span>HIGH SPEED AI</span></div>
+  <div class="specs"><span>4 vs 2</span><span>20 SETS</span><span>5 PASS CHAIN</span><span>DIAGONAL 2× PASS</span><span>PHONE PORTRAIT</span><span>TABLET LANDSCAPE</span></div>
   <button id="start" class="primary">鳥かご開始</button>
   <a class="secondary protocol-link" href="./tracking.html">前のゲーム：見失うな</a>
   <a class="secondary protocol-link" href="./possession.html">次のゲーム：ポゼッション</a>
@@ -41,12 +42,13 @@
   <div id="passRates" class="pass-rates"></div><div id="newBest" class="best" hidden>自己ベスト更新！</div>
   <button id="retry" class="primary">もう一度</button><button id="homeBtn" class="secondary">ホームへ</button>
 </section>
-<div id="portrait" class="portrait"><div><strong>PROモードは横向き専用</strong><p>コート全体と守備の動きを見るため、スマホを横向きにしてください。</p><button id="continue" class="secondary">このまま続ける</button></div></div>
-<div class="version">PRO v1.8 / P05</div>
+<div id="portrait" class="portrait"><div><strong>端末に合う向きでプレー</strong><p>スマホは縦向き、iPadやタブレットは横向きがおすすめです。</p><button id="continue" class="secondary">この向きで続ける</button></div></div>
+<div class="version">PRO v1.9 / P05</div>
 <script src="./rondo.js?v=1"></script>
 <script src="./rondo-chain.js?v=2"></script>
 <script src="./rondo-defense.js?v=2"></script>
 <script src="./rondo-pass-speed.js?v=1"></script>
 <script src="./rondo-spacing.js?v=2"></script>
+<script src="./phone-portrait.js?v=1"></script>
 </body>
 </html>
