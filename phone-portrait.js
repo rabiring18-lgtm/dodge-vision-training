@@ -110,6 +110,26 @@
     };
   }
 
+  // In phone portrait, keep both top attackers below the quit button and HUD.
+  if(gameId==='rondo'&&typeof playerSpots==='function'){
+    const baseRondoPlayerSpots=playerSpots;
+    playerSpots=function(){
+      if(isPhone()&&isPortrait()){
+        const size=Math.min(w,h);
+        const sideX=Math.max(size*.105,72);
+        const topY=Math.max(size*.20,128);
+        const bottomY=h-Math.max(size*.13,86);
+        return[
+          {x:sideX,y:topY},
+          {x:w-sideX,y:topY},
+          {x:w-sideX,y:bottomY},
+          {x:sideX,y:bottomY}
+        ];
+      }
+      return baseRondoPlayerSpots();
+    };
+  }
+
   // Enlarge moving-target selection only where canvas tapping is required.
   if(gameId==='tracking'&&typeof tap==='function'&&typeof canvas!=='undefined'){
     const baseTrackingTap=tap;
