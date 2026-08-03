@@ -6,15 +6,15 @@
 <meta name="theme-color" content="#050914">
 <title>DODGE READ PRO｜捕るか、避けるか</title>
 <link rel="stylesheet" href="./pro.css?v=2">
-<link rel="stylesheet" href="./catch-dodge.css?v=1">
+<link rel="stylesheet" href="./catch-dodge.css?v=2">
 </head>
 <body>
 <section id="home" class="screen home active">
   <div class="brand">DODGE READ</div><div class="protocol">ELITE VISION PROTOCOL 02</div>
   <h1>捕るか、避けるか<span class="pro">PRO</span></h1>
-  <p class="lead">軌道を読み、キャッチ・左右回避・静止を瞬時に選べ。<br>外れる球に反応するな。</p>
+  <p class="lead">軌道を読み、キャッチ・左右回避・見送りを瞬時に選べ。<br>外れる球に反応するな。</p>
   <div class="ball-logo"></div>
-  <div class="body-key"><span><b>中央</b>＝捕る</span><span><b>身体の左</b>＝右へ避ける</span><span><b>身体の右</b>＝左へ避ける</span><span><b>外れる球</b>＝動かない</span></div>
+  <div class="body-key"><span><b>中央</b>＝捕る</span><span><b>身体の左</b>＝右へ避ける</span><span><b>身体の右</b>＝左へ避ける</span><span><b>外れる球</b>＝見送る</span></div>
   <button id="start" class="primary">判断トレーニング開始</button>
   <a class="secondary protocol-link" href="./index.html">消えたボールへ</a>
   <div class="stats"><div><span>ベスト</span><strong id="best">-- / 20</strong></div><div><span>開始レベル</span><strong id="startLevel">Lv.10</strong></div><div><span>プレイ回数</span><strong id="sessions">0回</strong></div></div>
@@ -23,10 +23,11 @@
   <header class="header"><button id="quit" class="icon">×</button><div><div class="progress-text"><span id="number">1</span> / 20</div><div class="track"><div id="bar" class="bar"></div></div></div><div class="level">PRO LEVEL<strong id="level">10</strong></div></header>
   <div class="stage"><canvas id="canvas"></canvas><div id="focus" class="focus">＋</div><div id="count" class="count"></div><div id="feedback" class="feedback"></div><div id="timer" class="timer"><i></i></div><div id="instruction" class="instruction">中央の＋を見ろ</div></div>
   <div class="decision-answers">
-    <button class="decision" data-action="dodgeLeft" disabled>← 左へ避ける<small>右側へ来る球</small></button>
-    <button class="decision" data-action="catch" disabled>捕る<small>中央の安全な球</small></button>
-    <button class="decision" data-action="dodgeRight" disabled>右へ避ける →<small>左側へ来る球</small></button>
-    <button class="decision" data-action="stay" disabled>動かない<small>外れる球</small></button>
+    <button class="decision dodge" data-action="dodgeLeft" disabled>← 左へ避ける<small>右側へ来る球</small></button>
+    <button class="decision stay" data-action="stay" disabled>見送る<small>左へ外れる球</small></button>
+    <button class="decision catch" data-action="catch" disabled>捕る<small>中央の安全な球</small></button>
+    <button class="decision stay" data-action="stay" disabled>見送る<small>右へ外れる球</small></button>
+    <button class="decision dodge" data-action="dodgeRight" disabled>右へ避ける →<small>左側へ来る球</small></button>
   </div>
 </section>
 <section id="result" class="screen result compact">
@@ -36,8 +37,8 @@
   <div id="actionRates" class="action-rates"></div><div id="newBest" class="best" hidden>自己ベスト更新！</div>
   <button id="retry" class="primary">もう一度</button><button id="homeBtn" class="secondary">ホームへ</button>
 </section>
-<div id="portrait" class="portrait"><div><strong>PROモードは横向き専用</strong><p>4つの判断ボタンを正確に押すため、横向きにしてください。</p><button id="continue" class="secondary">このまま続ける</button></div></div>
-<div class="version">PRO v1.0 / P02</div>
-<script src="./catch-dodge.js?v=1"></script>
+<div id="portrait" class="portrait"><div><strong>PROモードは横向き専用</strong><p>5つの判断ボタンを正確に押すため、横向きにしてください。</p><button id="continue" class="secondary">このまま続ける</button></div></div>
+<div class="version">PRO v1.1 / P02</div>
+<script src="./catch-dodge.js?v=2"></script>
 </body>
 </html>
