@@ -1,6 +1,6 @@
 // Protocol 04 elite tuning override
 // - Always use seven balls
-// - Five times the original movement speed
+// - Seven times the original movement speed
 // - Keep the doubled tracking duration
 // - Smaller balls and shorter target preview
 // - Several balls make unpredictable direction changes during tracking
@@ -12,7 +12,7 @@ difficulty = function(level) {
   return {
     level,
     count: 7,
-    speed: (.115 + (level - 1) * .0065) * 5,
+    speed: (.115 + (level - 1) * .0065) * 7,
     trackTime: (2350 + (level - 1) * 58) * 2,
     targetTime: Math.max(420, 650 - (level - 1) * 12),
     answerLimit: 2400 - (level - 1) * 42,
