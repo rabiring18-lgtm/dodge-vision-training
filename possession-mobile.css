@@ -1,0 +1,81 @@
+/* Protocol 06 mobile landscape optimization.
+   Desktop layout is intentionally unchanged. */
+@media (orientation:landscape) and (pointer:coarse) and (max-height:700px){
+  body{overscroll-behavior:none}
+  .header{
+    height:48px;
+    grid-template-columns:40px 1fr 76px;
+    gap:7px;
+    padding:4px 7px;
+  }
+  .icon{
+    width:36px;
+    height:36px;
+    border-radius:9px;
+    font-size:23px;
+  }
+  .progress-text{font-size:12px}
+  .track{height:5px;margin-top:4px}
+  .level{
+    padding:3px 2px;
+    border-radius:9px;
+    font-size:9px;
+  }
+  .level strong{font-size:15px}
+  .possession-stage{
+    padding:2px;
+    place-items:center;
+  }
+  .possession-court{
+    width:min(calc(100vw - 4px),calc((100svh - 50px) * 1.9));
+    height:min(calc(100svh - 50px),calc((100vw - 4px) / 1.9));
+    border-radius:10px;
+  }
+  .possession-hud{
+    top:7px;
+    left:7px;
+    right:7px;
+    gap:5px;
+  }
+  .possession-hud span{
+    padding:5px 7px;
+    font-size:9px;
+    letter-spacing:.04em;
+  }
+  .feedback{
+    top:17%;
+    max-width:72%;
+    font-size:clamp(24px,5.8vh,34px);
+    line-height:1.04;
+  }
+  .instruction{
+    bottom:6px;
+    padding:5px 11px;
+    font-size:11px;
+  }
+  .timer{
+    top:5px;
+    width:min(250px,42vw);
+  }
+  .version{
+    right:6px;
+    bottom:4px;
+    font-size:8px;
+  }
+}
+
+@media (orientation:landscape) and (pointer:coarse) and (max-height:420px){
+  .header{
+    height:44px;
+    grid-template-columns:37px 1fr 70px;
+  }
+  .icon{width:33px;height:33px}
+  .possession-court{
+    width:min(calc(100vw - 4px),calc((100svh - 46px) * 1.95));
+    height:min(calc(100svh - 46px),calc((100vw - 4px) / 1.95));
+  }
+  .feedback{
+    top:16%;
+    font-size:clamp(22px,6vh,30px);
+  }
+}
