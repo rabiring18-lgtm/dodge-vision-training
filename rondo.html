@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050914">
 <title>DODGE READ PRO｜鳥かご</title>
 <link rel="stylesheet" href="./pro.css?v=2">
-<link rel="stylesheet" href="./rondo.css?v=1">
+<link rel="stylesheet" href="./rondo.css?v=2">
 </head>
 <body>
 <section id="home" class="screen home active">
@@ -22,12 +22,14 @@
 <section id="game" class="screen game">
   <header class="header"><button id="quit" class="icon">×</button><div><div class="progress-text"><span id="number">1</span> / 20</div><div class="track"><div id="bar" class="bar"></div></div></div><div class="level">PRO LEVEL<strong id="level">8</strong></div></header>
   <div class="stage rondo-stage">
-    <canvas id="canvas" aria-label="鳥かごパス判断ゲーム"></canvas>
-    <div id="count" class="count"></div>
-    <div id="feedback" class="feedback"></div>
-    <div id="timer" class="timer"><i></i></div>
-    <div id="instruction" class="instruction">守備を見てパス先を選べ</div>
-    <div class="rondo-hud"><span id="streak">STREAK 0</span><span id="defenderCount">1 DEFENDER</span></div>
+    <div class="rondo-court">
+      <canvas id="canvas" aria-label="鳥かごパス判断ゲーム"></canvas>
+      <div id="count" class="count"></div>
+      <div id="feedback" class="feedback"></div>
+      <div id="timer" class="timer"><i></i></div>
+      <div id="instruction" class="instruction">守備を見てパス先を選べ</div>
+      <div class="rondo-hud"><span id="streak">STREAK 0</span><span id="defenderCount">1 DEFENDER</span></div>
+    </div>
   </div>
 </section>
 <section id="result" class="screen result compact">
@@ -38,7 +40,7 @@
   <button id="retry" class="primary">もう一度</button><button id="homeBtn" class="secondary">ホームへ</button>
 </section>
 <div id="portrait" class="portrait"><div><strong>PROモードは横向き専用</strong><p>コート全体と守備の動きを見るため、スマホを横向きにしてください。</p><button id="continue" class="secondary">このまま続ける</button></div></div>
-<div class="version">PRO v1.0 / P05</div>
+<div class="version">PRO v1.1 / P05</div>
 <script src="./rondo.js?v=1"></script>
 </body>
 </html>
