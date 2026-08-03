@@ -1,5 +1,7 @@
 // Protocol 05 defender spacing tuning
-// Keep the two defenders spread apart so diagonal passing lanes can open.
+// Keep the two defenders spread while the user is deciding, without forcing
+// them away from an active pass lane. Once a pass starts, both defenders are
+// free to attack and intercept the ball.
 
 const originalRondoMakeDefendersForSpacing = makeDefenders;
 const originalRondoAssignPlanForSpacing = assignDefensivePlan;
@@ -23,8 +25,8 @@ makeDefenders = function(d) {
 assignDefensivePlan = function(t) {
   originalRondoAssignPlanForSpacing(t);
 
-  // The double press remains aggressive, but the two defenders approach from
-  // wider angles instead of collapsing into the same central lane.
+  // Keep double pressure wide enough to create two distinct approaches,
+  // while still allowing both defenders to collapse on the actual pass.
   if (t?.plan === 'double-trap' && t.defenders?.length === 2) {
     t.defenders[0].curve = -.15;
     t.defenders[1].curve = .15;
@@ -39,8 +41,8 @@ function clampDefenderToCourt(defender, size) {
   defender.y = clamp(defender.y, margin, h - margin);
 }
 
-function preserveWideDefenderGap(t) {
-  if (!t?.defenders || t.defenders.length < 2) return;
+function preserveDecisionGap(t) {
+  if (!t?.defenders || t.defenders.length < 2 || t.phase !== 'choosing') return;
 
   const size = Math.min(w, h);
   const first = t.defenders[0];
@@ -56,8 +58,9 @@ function preserveWideDefenderGap(t) {
     distance = 1;
   }
 
-  const diagonalPass = t.phase === 'passing' && t.pass?.isDiagonal;
-  const minimumGap = size * (diagonalPass ? .42 : .34);
+  // Maintain visible separation only before the pass is selected. This keeps
+  // the defensive picture readable without opening a guaranteed corridor.
+  const minimumGap = size * .32;
 
   if (distance < minimumGap) {
     const ux = dx / distance;
@@ -70,38 +73,6 @@ function preserveWideDefenderGap(t) {
     second.y += uy * push;
   }
 
-  // During a diagonal pass, keep the defenders on opposite sides of the pass
-  // line. This opens a visible central window instead of letting both collapse
-  // onto the same diagonal corridor.
-  if (diagonalPass) {
-    const from = t.players[t.pass.from];
-    const to = t.players[t.pass.to];
-    const lineX = to.x - from.x;
-    const lineY = to.y - from.y;
-    const lineLength = Math.hypot(lineX, lineY) || 1;
-    const perpX = -lineY / lineLength;
-    const perpY = lineX / lineLength;
-    const midX = (from.x + to.x) / 2;
-    const midY = (from.y + to.y) / 2;
-    const firstSide = (first.x - midX) * perpX + (first.y - midY) * perpY;
-    const secondSide = (second.x - midX) * perpX + (second.y - midY) * perpY;
-    const corridorHalfWidth = size * .15;
-    const firstSign = firstSide >= secondSide ? 1 : -1;
-    const secondSign = -firstSign;
-
-    if (Math.abs(firstSide) < corridorHalfWidth || Math.sign(firstSide || firstSign) !== firstSign) {
-      const correction = firstSign * corridorHalfWidth - firstSide;
-      first.x += perpX * correction;
-      first.y += perpY * correction;
-    }
-
-    if (Math.abs(secondSide) < corridorHalfWidth || Math.sign(secondSide || secondSign) !== secondSign) {
-      const correction = secondSign * corridorHalfWidth - secondSide;
-      second.x += perpX * correction;
-      second.y += perpY * correction;
-    }
-  }
-
   clampDefenderToCourt(first, size);
   clampDefenderToCourt(second, size);
 }
@@ -110,6 +81,6 @@ moveDefenders = function(dt) {
   originalRondoMoveDefendersForSpacing(dt);
 
   if (state?.t && state.t.phase !== 'done') {
-    preserveWideDefenderGap(state.t);
+    preserveDecisionGap(state.t);
   }
 };
