@@ -110,20 +110,19 @@
     };
   }
 
-  // In phone portrait, keep both top attackers below the quit button and HUD.
+  // In phone portrait, place all four attackers at equal-distance corners.
+  // Do not reserve a large top area: the court itself must remain a true square.
   if(gameId==='rondo'&&typeof playerSpots==='function'){
     const baseRondoPlayerSpots=playerSpots;
     playerSpots=function(){
       if(isPhone()&&isPortrait()){
         const size=Math.min(w,h);
-        const sideX=Math.max(size*.105,72);
-        const topY=Math.max(size*.20,128);
-        const bottomY=h-Math.max(size*.13,86);
+        const edge=Math.max(size*.12,44);
         return[
-          {x:sideX,y:topY},
-          {x:w-sideX,y:topY},
-          {x:w-sideX,y:bottomY},
-          {x:sideX,y:bottomY}
+          {x:edge,y:edge},
+          {x:w-edge,y:edge},
+          {x:w-edge,y:h-edge},
+          {x:edge,y:h-edge}
         ];
       }
       return baseRondoPlayerSpots();
