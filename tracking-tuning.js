@@ -4,6 +4,7 @@
 // - Keep the doubled tracking duration
 // - Smaller balls and shorter target preview
 // - Several balls make unpredictable direction changes during tracking
+// - Preserve each ball's assigned speed after collisions and direction changes
 
 difficulty = function(level) {
   level = clamp(Math.round(level), 1, MAX_LEVEL);
@@ -43,13 +44,14 @@ createBalls = function(d) {
     );
 
     const angle = Math.random() * Math.PI * 2;
-    const speed = Math.min(w, h) * d.speed * (.90 + Math.random() * .20);
+    const targetSpeed = Math.min(w, h) * d.speed * (.90 + Math.random() * .20);
 
     balls.push({
       x,
       y,
-      vx: Math.cos(angle) * speed,
-      vy: Math.sin(angle) * speed,
+      vx: Math.cos(angle) * targetSpeed,
+      vy: Math.sin(angle) * targetSpeed,
+      targetSpeed,
       r
     });
   }
@@ -68,6 +70,26 @@ function rotateVelocity(ball, angle) {
   const vy = ball.vx * sin + ball.vy * cos;
   ball.vx = vx;
   ball.vy = vy;
+}
+
+function preserveAssignedSpeed(ball) {
+  const targetSpeed = ball.targetSpeed || Math.hypot(ball.vx, ball.vy);
+  const currentSpeed = Math.hypot(ball.vx, ball.vy);
+
+  if (!Number.isFinite(targetSpeed) || targetSpeed <= 0) return;
+
+  if (!Number.isFinite(currentSpeed) || currentSpeed < .0001) {
+    const angle = Math.random() * Math.PI * 2;
+    ball.vx = Math.cos(angle) * targetSpeed;
+    ball.vy = Math.sin(angle) * targetSpeed;
+    return;
+  }
+
+  // Collisions may redistribute velocity between balls. Restore the assigned
+  // magnitude every frame so only direction changes and no ball slows down.
+  const scale = targetSpeed / currentSpeed;
+  ball.vx *= scale;
+  ball.vy *= scale;
 }
 
 function applyRandomCuts() {
@@ -111,6 +133,10 @@ updatePhysics = function(dt) {
   ) {
     trackingTurnElapsed = 0;
     applyRandomCuts();
+  }
+
+  if (state && state.phase === 'tracking') {
+    state.t.balls.forEach(preserveAssignedSpeed);
   }
 };
 
