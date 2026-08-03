@@ -12,9 +12,9 @@
 <section id="home" class="screen home active">
   <div class="brand">DODGE READ</div><div class="protocol">ELITE VISION PROTOCOL 05</div>
   <h1>鳥かご<span class="pro">PRO</span></h1>
-  <p class="lead">守備の位置と寄せを読み、奪われる前に最も安全な味方へつなげ。</p>
+  <p class="lead">守備の位置と寄せを読み、5本連続でパスをつないで初めて1回成功。</p>
   <div class="rondo-logo"><i class="mate m1"></i><i class="mate m2"></i><i class="mate m3"></i><i class="mate m4"></i><b></b><span></span></div>
-  <div class="specs"><span>4 vs 1–2</span><span>20 PASSES</span><span>LIVE DEFENDERS</span><span>ADAPTIVE Lv.1–20</span></div>
+  <div class="specs"><span>4 vs 1–2</span><span>20 SETS</span><span>5 PASS CHAIN</span><span>LIVE DEFENDERS</span><span>ADAPTIVE Lv.1–20</span></div>
   <button id="start" class="primary">鳥かご開始</button>
   <a class="secondary protocol-link" href="./tracking.html">前のゲーム：見失うな</a>
   <div class="stats"><div><span>ベスト</span><strong id="best">-- / 20</strong></div><div><span>開始レベル</span><strong id="startLevel">Lv.8</strong></div><div><span>プレイ回数</span><strong id="sessions">0回</strong></div></div>
@@ -27,20 +27,21 @@
       <div id="count" class="count"></div>
       <div id="feedback" class="feedback"></div>
       <div id="timer" class="timer"><i></i></div>
-      <div id="instruction" class="instruction">守備を見てパス先を選べ</div>
-      <div class="rondo-hud"><span id="streak">STREAK 0</span><span id="defenderCount">1 DEFENDER</span></div>
+      <div id="instruction" class="instruction">5本つないで1回成功</div>
+      <div class="rondo-hud"><span id="streak">CHAIN 0 / 5</span><span id="defenderCount">1 DEFENDER</span></div>
     </div>
   </div>
 </section>
 <section id="result" class="screen result compact">
   <div class="brand">PROTOCOL COMPLETE</div><h1>鳥かご完了</h1>
   <div class="score"><div><strong id="score">0</strong><span>/ 20</span></div></div><p id="message" class="lead"></p>
-  <div class="result-grid"><div><span>判断時間</span><strong id="reaction">-- ms</strong></div><div><span>到達レベル</span><strong id="endLevel">Lv.8</strong></div><div><span>最大連続</span><strong id="maxStreak">0本</strong></div><div><span>奪われた回数</span><strong id="turnovers">0回</strong></div></div>
+  <div class="result-grid"><div><span>判断時間</span><strong id="reaction">-- ms</strong></div><div><span>到達レベル</span><strong id="endLevel">Lv.8</strong></div><div><span>最大連続パス</span><strong id="maxStreak">0本</strong></div><div><span>失敗セット</span><strong id="turnovers">0回</strong></div></div>
   <div id="passRates" class="pass-rates"></div><div id="newBest" class="best" hidden>自己ベスト更新！</div>
   <button id="retry" class="primary">もう一度</button><button id="homeBtn" class="secondary">ホームへ</button>
 </section>
 <div id="portrait" class="portrait"><div><strong>PROモードは横向き専用</strong><p>コート全体と守備の動きを見るため、スマホを横向きにしてください。</p><button id="continue" class="secondary">このまま続ける</button></div></div>
-<div class="version">PRO v1.1 / P05</div>
+<div class="version">PRO v1.2 / P05</div>
 <script src="./rondo.js?v=1"></script>
+<script src="./rondo-chain.js?v=1"></script>
 </body>
 </html>
