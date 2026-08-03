@@ -4,36 +4,82 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050914">
-<title>DODGE READ PRO｜消えたボール</title>
-<link rel="stylesheet" href="./pro.css?v=2">
+<title>DODGE READ PRO｜トレーニング選択</title>
+<link rel="stylesheet" href="./launcher.css?v=1">
 </head>
 <body>
-<section id="home" class="screen home active">
-  <div class="brand">DODGE READ</div><div class="protocol">ELITE VISION PROTOCOL 01</div>
-  <h1>消えたボール<span class="pro">PRO</span></h1>
-  <p class="lead">短い初動だけを見て、5つの到達ゾーンを予測する。<br>迷っている時間はない。</p>
-  <div class="ball-logo"></div>
-  <div class="specs"><span>5 ZONES</span><span>20 BALLS</span><span>TIME LIMIT</span><span>ADAPTIVE Lv.1–20</span></div>
-  <button id="start" class="primary">PROトレーニング開始</button>
-  <a class="secondary protocol-link" href="./catch-dodge.html">次のゲーム：捕るか、避けるか</a>
-  <div class="stats"><div><span>ベスト</span><strong id="best">-- / 20</strong></div><div><span>開始レベル</span><strong id="startLevel">Lv.10</strong></div><div><span>プレイ回数</span><strong id="sessions">0回</strong></div></div>
-</section>
-<section id="game" class="screen game">
-  <header class="header"><button id="quit" class="icon">×</button><div><div class="progress-text"><span id="number">1</span> / 20</div><div class="track"><div id="bar" class="bar"></div></div></div><div class="level">PRO LEVEL<strong id="level">10</strong></div></header>
-  <div class="stage"><canvas id="canvas"></canvas><div id="focus" class="focus">＋</div><div id="count" class="count"></div><div id="feedback" class="feedback"></div><div id="timer" class="timer"><i></i></div><div id="instruction" class="instruction">中央の＋を見ろ</div></div>
-  <div class="answers">
-    <button class="answer" data-zone="0" disabled>1<small>左端</small></button><button class="answer" data-zone="1" disabled>2<small>左中</small></button><button class="answer" data-zone="2" disabled>3<small>中央</small></button><button class="answer" data-zone="3" disabled>4<small>右中</small></button><button class="answer" data-zone="4" disabled>5<small>右端</small></button>
-  </div>
-</section>
-<section id="result" class="screen result">
-  <div class="brand">PROTOCOL COMPLETE</div><h1>トレーニング完了</h1>
-  <div class="score"><div><strong id="score">0</strong><span>/ 20</span></div></div><p id="message" class="lead"></p>
-  <div class="result-grid"><div><span>反応時間</span><strong id="reaction">-- ms</strong></div><div><span>到達レベル</span><strong id="endLevel">Lv.10</strong></div><div><span>1ゾーン差</span><strong id="nearMiss">0回</strong></div><div><span>TIME OUT</span><strong id="timeouts">0回</strong></div></div>
-  <div id="zoneRates" class="zone-rates"></div><div id="newBest" class="best" hidden>自己ベスト更新！</div>
-  <button id="retry" class="primary">もう一度</button><button id="homeBtn" class="secondary">ホームへ</button>
-</section>
-<div id="portrait" class="portrait"><div><strong>PROモードは横向き専用</strong><p>5ゾーンを正確に判断するため、スマホを横向きにしてください。</p><button id="continue" class="secondary">このまま続ける</button></div></div>
-<div class="version">PRO v2.1</div>
-<script src="./pro.js?v=2"></script>
+<div class="launcher">
+  <header class="hero">
+    <div class="brand">DODGE READ</div>
+    <h1>VISION TRAINING<span>SELECT PROTOCOL</span></h1>
+    <p>ボールだけを見るな。軌道、空間、守備、次の展開を読み、試合で使える判断力を鍛える。</p>
+    <div class="hero-meta"><span>6 PROTOCOLS</span><span>ADAPTIVE LEVEL</span><span>LOCAL RECORD</span></div>
+  </header>
+
+  <main class="protocol-grid" aria-label="トレーニング一覧">
+    <a class="protocol-card p1" data-game="p1" href="./hidden-ball.html">
+      <div class="card-top"><span class="protocol-no">PROTOCOL 01</span><span class="orientation">横向き</span></div>
+      <div class="card-mark">01</div>
+      <h2>消えたボール</h2>
+      <p class="description">短い初動から、ボールが到達する5つのゾーンを予測する。</p>
+      <div class="tags"><span>軌道予測</span><span>反応速度</span><span>20 BALLS</span></div>
+      <div class="card-record"><span>BEST<strong data-best>-- / 20</strong></span><span>PLAY<strong data-sessions>0回</strong></span></div>
+      <span class="card-arrow">›</span>
+    </a>
+
+    <a class="protocol-card p2" data-game="p2" href="./catch-dodge.html">
+      <div class="card-top"><span class="protocol-no">PROTOCOL 02</span><span class="orientation">横向き</span></div>
+      <div class="card-mark">02</div>
+      <h2>捕るか、避けるか</h2>
+      <p class="description">軌道を読み、キャッチ・左右回避・見送りを瞬時に選ぶ。</p>
+      <div class="tags"><span>守備判断</span><span>回避方向</span><span>20 BALLS</span></div>
+      <div class="card-record"><span>BEST<strong data-best>-- / 20</strong></span><span>PLAY<strong data-sessions>0回</strong></span></div>
+      <span class="card-arrow">›</span>
+    </a>
+
+    <a class="protocol-card p3" data-game="p3" href="./peripheral.html">
+      <div class="card-top"><span class="protocol-no">PROTOCOL 03</span><span class="orientation">横向き</span></div>
+      <div class="card-mark">03</div>
+      <h2>中央を見ろ</h2>
+      <p class="description">中央から目を離さず、周辺に現れる情報を正確に捉える。</p>
+      <div class="tags"><span>周辺視野</span><span>選択視</span><span>8 DIRECTIONS</span></div>
+      <div class="card-record"><span>BEST<strong data-best>-- / 20</strong></span><span>PLAY<strong data-sessions>0回</strong></span></div>
+      <span class="card-arrow">›</span>
+    </a>
+
+    <a class="protocol-card p4" data-game="p4" href="./tracking.html">
+      <div class="card-top"><span class="protocol-no">PROTOCOL 04</span><span class="orientation">横向き</span></div>
+      <div class="card-mark">04</div>
+      <h2>見失うな</h2>
+      <p class="description">高速で交差し進路を変える複数のボールから、対象を追い続ける。</p>
+      <div class="tags"><span>動体視力</span><span>追跡力</span><span>7 BALLS</span></div>
+      <div class="card-record"><span>BEST<strong data-best>-- / 15</strong></span><span>PLAY<strong data-sessions>0回</strong></span></div>
+      <span class="card-arrow">›</span>
+    </a>
+
+    <a class="protocol-card p5" data-game="p5" href="./rondo.html">
+      <div class="card-top"><span class="protocol-no">PROTOCOL 05</span><span class="orientation">横向き</span></div>
+      <div class="card-mark">05</div>
+      <h2>鳥かご</h2>
+      <p class="description">2人の守備の寄せと予測を読み、空いたコースへ5本つなぐ。</p>
+      <div class="tags"><span>4 vs 2</span><span>パス判断</span><span>5 PASS CHAIN</span></div>
+      <div class="card-record"><span>BEST<strong data-best>-- / 20</strong></span><span>PLAY<strong data-sessions>0回</strong></span></div>
+      <span class="card-arrow">›</span>
+    </a>
+
+    <a class="protocol-card p6" data-game="p6" href="./possession.html">
+      <div class="card-top"><span class="protocol-no">PROTOCOL 06</span><span class="orientation">スマホ縦／タブレット横</span></div>
+      <div class="card-mark">06</div>
+      <h2>ポゼッション</h2>
+      <p class="description">通常守備と予測不能な守備を動かし、20秒間ボールを保持する。</p>
+      <div class="tags"><span>5 vs 3</span><span>展開判断</span><span>20 SEC HOLD</span></div>
+      <div class="card-record"><span>BEST<strong data-best>-- / 15</strong></span><span>PLAY<strong data-sessions>0回</strong></span></div>
+      <span class="card-arrow">›</span>
+    </a>
+  </main>
+
+  <footer class="footer">DODGE READ PRO / ELITE VISION TRAINING</footer>
+</div>
+<script src="./launcher.js?v=1"></script>
 </body>
 </html>
