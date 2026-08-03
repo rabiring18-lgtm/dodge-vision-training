@@ -1,9 +1,52 @@
 // Protocol 06 mobile controls.
-// On coarse-pointer landscape devices, use fullscreen when possible and make
-// moving teammates easier to select without changing desktop gameplay.
+// Try the browser Fullscreen API, then always use an in-app fullscreen layout
+// on touch devices so the court remains large even when browser UI cannot hide.
+
+function possessionTouchDevice(){
+  return navigator.maxTouchPoints>0||
+    matchMedia('(pointer:coarse)').matches||
+    matchMedia('(hover:none)').matches||
+    'ontouchstart' in window;
+}
 
 function possessionMobilePlayMode(){
-  return matchMedia('(pointer:coarse)').matches&&innerWidth>innerHeight&&innerHeight<=700;
+  const landscape=innerWidth>innerHeight;
+  const shortSide=Math.min(innerWidth,innerHeight);
+  return possessionTouchDevice()&&landscape&&shortSide<=900;
+}
+
+function possessionFullscreenElement(){
+  return document.fullscreenElement||document.webkitFullscreenElement||null;
+}
+
+async function requestPossessionFullscreen(){
+  const target=document.documentElement;
+  const request=target.requestFullscreen||target.webkitRequestFullscreen;
+  if(!request||possessionFullscreenElement())return false;
+
+  try{
+    // Invoke directly from the start-button gesture for maximum compatibility.
+    await request.call(target);
+    return Boolean(possessionFullscreenElement());
+  }catch{
+    return false;
+  }
+}
+
+function enterPossessionMobileLayout(){
+  if(!possessionMobilePlayMode())return;
+  document.body.classList.add('possession-mobile-playing');
+  document.documentElement.classList.add('possession-mobile-playing');
+  setTimeout(()=>{
+    window.scrollTo(0,1);
+    refreshPortrait();
+    if($('#game').classList.contains('active'))resize();
+  },80);
+}
+
+function leavePossessionMobileLayout(){
+  document.body.classList.remove('possession-mobile-playing');
+  document.documentElement.classList.remove('possession-mobile-playing');
 }
 
 const originalPossessionTapForMobile=tap;
@@ -31,7 +74,7 @@ tap=function(event){
 
   const size=Math.min(w,h);
   const hitRadius=possessionMobilePlayMode()
-    ?Math.max(52,size*.13)
+    ?Math.max(56,size*.14)
     :Math.max(38,size*.085);
 
   if(chosen<0||best>hitRadius)return;
@@ -58,21 +101,41 @@ canvas.addEventListener('pointerdown',tap,{passive:false});
 
 const originalPossessionStartForMobile=start;
 start=async function(){
-  if(possessionMobilePlayMode()&&!document.fullscreenElement&&document.fullscreenEnabled){
-    try{
-      await document.documentElement.requestFullscreen();
+  const mobileMode=possessionMobilePlayMode();
+
+  if(mobileMode){
+    // Apply the fallback immediately. Browser fullscreen is an enhancement.
+    enterPossessionMobileLayout();
+    const fullscreenPromise=requestPossessionFullscreen();
+    await fullscreenPromise;
+
+    if(possessionFullscreenElement()){
       try{await screen.orientation?.lock?.('landscape')}catch{}
-      await new Promise(resolve=>setTimeout(resolve,80));
-    }catch{}
+    }
   }
-  return originalPossessionStartForMobile();
+
+  const result=await originalPossessionStartForMobile();
+  if(mobileMode){
+    setTimeout(()=>{
+      window.scrollTo(0,1);
+      resize();
+    },100);
+  }
+  return result;
 };
 
 const originalPossessionHomeForMobile=home;
 home=function(){
   originalPossessionHomeForMobile();
-  if(document.fullscreenElement){
-    document.exitFullscreen().catch(()=>{});
+  leavePossessionMobileLayout();
+
+  const fullscreen=possessionFullscreenElement();
+  if(fullscreen){
+    const exit=document.exitFullscreen||document.webkitExitFullscreen;
+    try{
+      const result=exit?.call(document);
+      result?.catch?.(()=>{});
+    }catch{}
   }
 };
 
@@ -83,9 +146,16 @@ $('#quit').onclick=()=>{
   if(confirm('トレーニングを終了しますか？'))home();
 };
 
-addEventListener('fullscreenchange',()=>{
+function refreshPossessionMobileViewport(){
   setTimeout(()=>{
+    if(possessionMobilePlayMode()&&$('#game').classList.contains('active')){
+      enterPossessionMobileLayout();
+    }
     refreshPortrait();
     if($('#game').classList.contains('active'))resize();
   },100);
-});
+}
+
+addEventListener('fullscreenchange',refreshPossessionMobileViewport);
+addEventListener('webkitfullscreenchange',refreshPossessionMobileViewport);
+visualViewport?.addEventListener('resize',refreshPossessionMobileViewport);
