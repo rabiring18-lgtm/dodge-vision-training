@@ -49,11 +49,27 @@ function nextSet(){
   session.index>=TOTAL?finish():launch();
 }
 
+function continueCurrentSet(t){
+  clearTimeout(decisionTimer);
+
+  // Keep the same trial, players and defenders. Only possession changes.
+  // This preserves every defender's position and movement between passes.
+  t.holder=session.holder;
+  t.pass=null;
+  t.phase='choosing';
+  t.resolved=false;
+  t.opened=performance.now();
+  lastFrame=performance.now();
+
+  $('#instruction').textContent='続けてつなげ';
+  $('#timer').className='timer show';
+  decisionTimer=setTimeout(()=>finishPass(false,false,true),t.d.decisionLimit);
+}
+
 finishPass=function(success,intercepted=false,timedOut=false){
   if(!state||state.t.resolved)return;
   const t=state.t;
   t.resolved=true;
-  t.phase='done';
   clearTimeout(decisionTimer);
 
   const ms=Math.round(performance.now()-t.opened);
@@ -72,12 +88,20 @@ finishPass=function(success,intercepted=false,timedOut=false){
     if(session.chain<PASSES_PER_SUCCESS){
       f.textContent=`${session.chain} / ${PASSES_PER_SUCCESS}`;
       f.className='feedback show good';
-      $('#instruction').textContent='続けてつなげ';
       header();
-      setTimeout(launch,430);
+      continueCurrentSet(t);
+
+      const chainAtFeedback=session.chain;
+      setTimeout(()=>{
+        if(state?.t===t&&session?.chain===chainAtFeedback&&!t.resolved){
+          f.textContent='';
+          f.className='feedback';
+        }
+      },260);
       return;
     }
 
+    t.phase='done';
     const setPasses=[...session.currentSetPasses];
     const averageMs=Math.round(setPasses.reduce((sum,p)=>sum+p.ms,0)/setPasses.length);
     const defenders=Math.max(...setPasses.map(p=>p.defenders));
@@ -87,6 +111,7 @@ finishPass=function(success,intercepted=false,timedOut=false){
     f.textContent='5 PASSES!';
     f.className='feedback show good';
     $('#instruction').textContent='1回成功';
+    $('#timer').className='timer';
     session.chain=0;
     session.currentSetPasses=[];
     header();
@@ -94,6 +119,7 @@ finishPass=function(success,intercepted=false,timedOut=false){
     return;
   }
 
+  t.phase='done';
   const completed=session.chain;
   const setPasses=[...session.currentSetPasses];
   const averageMs=Math.round(setPasses.reduce((sum,p)=>sum+p.ms,0)/setPasses.length);
@@ -104,6 +130,7 @@ finishPass=function(success,intercepted=false,timedOut=false){
   f.textContent=timedOut?'TIME OUT':'INTERCEPTED';
   f.className='feedback show bad';
   $('#instruction').textContent=`${completed}本で終了。0本から再開`;
+  $('#timer').className='timer';
   session.chain=0;
   session.streak=0;
   session.currentSetPasses=[];
@@ -131,7 +158,7 @@ finish=function(){
   $('#endLevel').textContent=`Lv.${endLevel}`;
   $('#maxStreak').textContent=`${session.maxStreak}本`;
   $('#turnovers').textContent=`${turnovers}回`;
-  $('#message').textContent=score>=18?'ELITE。5本の連続保持を安定して完成させています。':score>=15?'高水準。守備の寄せを見ながら連続して逃がせています。':score>=11?'判断は成立。次の受け手をパス前から準備しよう。':'1本を通すだけで終わらず、5本先まで保持を続けよう。';
+  $('#message').textContent=score>=18?'ELITE。同じ守備の連続した寄せを外しながら、5本の保持を完成させています。':score>=15?'高水準。守備の動きが続いても、次の空きを捉えられています。':score>=11?'判断は成立。パス後も守備から目を切らず、次の受け手を準備しよう。':'1本を通した後に安心せず、動き続ける守備を追いながら5本つなごう。';
   $('#passRates').innerHTML=[1,2].map(n=>{
     const rate=rateFor(n);
     return `<div><span>${n} DEFENDER${n>1?'S':''}</span><strong>${rate===null?'--':rate+'%'}</strong></div>`;
